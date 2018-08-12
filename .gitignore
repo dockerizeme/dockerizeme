@@ -1,0 +1,9 @@
+.idea/
+*.iml
+__pycache__/
+*.pyc
+node_modules/
+neo4j/databases/
+*.log
+*.retry
+.vagrant

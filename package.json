@@ -1,0 +1,23 @@
+{
+  "name": "dockerizeme",
+  "version": "1.0.0",
+  "description": "Given a code snippet and dependency tree, generate a Dockerfile to run code.",
+  "main": "src/index.js",
+  "bin": "src/bin.js",
+  "scripts": {
+    "dockerizeme": "node src/bin.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "dockerfile-generator": "^2.1.0",
+    "js-yaml": "^3.10.0",
+    "lodash": "^4.17.10",
+    "neo4j-driver": "^1.5.3",
+    "request": "^2.88.0",
+    "semver": "^5.4.1",
+    "winston": "^2.4.1",
+    "yargs": "^12.0.1"
+  }
+}
