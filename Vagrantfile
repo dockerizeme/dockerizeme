@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
 
     # Use Ubuntu Xenial
     machine.vm.box = 'ubuntu/xenial64'
-    machine.vm.box_version = '20180808.0.0'
+    machine.vm.box_version = '20181217.0.0'
 
     # Set up private network for local access
     machine.vm.network 'private_network', ip: '192.168.33.10'
