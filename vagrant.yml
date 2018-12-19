@@ -22,6 +22,7 @@
     dockerizeme_bin_path: /usr/bin/dockerizeme
 
     # Not inside {{ dockerizeme_path }}/neo4j because neo4j can't get a lock on rsynced directory
+    neo4j_image: neo4j:3.5
     neo4j_data_path: /neo4j
     neo4j_backup_path: "{{ dockerizeme_path }}/neo4j"
     neo4j_backup_name: neo4j.dump
@@ -44,16 +45,14 @@
   - name: Install APT Packages
     become: yes
     apt:
-      name: "{{ item }}"
+      name: "{{ apt_packages }}"
       state: present
-    with_items: "{{ apt_packages }}"
 
   - name: Install Python Packages
     become: yes
     pip:
-      name: "{{ item }}"
+      name: "{{ python_packages }}"
       state: latest
-    with_items: "{{ python_packages }}"
 
   - name: Install DockerizeMe CLI Dependencies
     npm:
@@ -89,7 +88,7 @@
       - name: Ensure Neo4J is Stopped
         become: yes
         docker_container:
-          name: neo4j
+          name: "{{ neo4j_image }}"
           state: absent
 
       - name: Create Neo4J Data Directory
@@ -105,15 +104,21 @@
           src: "{{ neo4j_backup_path }}/{{ neo4j_backup_name }}"
           dest: "{{ neo4j_data_path }}/{{ neo4j_backup_name }}"
 
+      - name: Create Neo4J Databases Directory
+        become: yes
+        file:
+          path: "{{ neo4j_data_path }}/databases"
+          state: directory
+
       - name: Create Neo4j Database From Backup
         become: yes
-        command: docker run --rm -v "{{ neo4j_data_path }}:/data" neo4j neo4j-admin load --force --from=/data/{{ neo4j_backup_name }}
+        command: docker run --rm -v "{{ neo4j_data_path }}:/data" "{{ neo4j_image }}" neo4j-admin load --from=/data/{{ neo4j_backup_name }}
 
   - name: Run Neo4J
     become: yes
     docker_container:
       name: neo4j
-      image: neo4j
+      image: "{{ neo4j_image }}"
       restart_policy: always
       state: started
       ports:
