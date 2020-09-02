@@ -36,7 +36,7 @@ def copyPathsAndAnchorsFromLayerToLayer( sourceLayer, targetLayer ):
             targetLayer.anchors.append( newAnchor )
             # print "   %s (%i, %i)" % ( thisAnchor.name, thisAnchor.position.x, thisAnchor.position.y )
 
-for thisMainIndex in range( len(Glyphs.fonts[0].mains) ):
+for thisMainIndex in range( len(Glyphs.fonts[0].masters) ):
 
     # fonts = AllFonts()
     # f1 = RFont(Glyphs.fonts[0])
@@ -79,7 +79,7 @@ for thisMainIndex in range( len(Glyphs.fonts[0].mains) ):
     notSameGlyphsString = '/{0}'.format('/'.join(notSameGlyphsList))
     sameGlyphsString = '/{0}'.format('/'.join(sameGlyphsList))
 
-    print "\n%s" % Glyphs.fonts[0].mains[thisMainIndex].name
+    print "\n%s" % Glyphs.fonts[0].masters[thisMainIndex].name
     print "\tDifferent Glyphs\n%s" % notSameGlyphsString
     print "\n\tDifference is that one file is blank Glyphs\n%s" % blankGlyphsString
     ## print "\n\tSame Glyphs\n%s" % sameGlyphsString
@@ -94,7 +94,7 @@ for thisMainIndex in range( len(Glyphs.fonts[0].mains) ):
             otherFont = Glyphs.fonts[1]
 
         # Add glyphs to background
-        thisFontMainID = thisFont.mains[thisMainIndex].id
+        thisFontMainID = thisFont.masters[thisMainIndex].id
 
         for thisGlyphName in notSameGlyphsList:
             if thisGlyphName not in blankGlyphsList:
@@ -113,4 +113,4 @@ for thisMainIndex in range( len(Glyphs.fonts[0].mains) ):
     if notSameGlyphsList != []:
         Glyphs.font.newTab(notSameGlyphsString)
         # Change to the correct main
-        Glyphs.font.currentTab.setMainIndex_(thisMainIndex)
+        Glyphs.font.currentTab.setMasterIndex_(thisMainIndex)

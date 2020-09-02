@@ -12,7 +12,7 @@ def new_task(offer):
     task = mesos_pb2.TaskInfo()
     id = uuid.uuid4()
     task.task_id.value = str(id)
-    task.subordinate_id.value = offer.subordinate_id.value
+    task.slave_id.value = offer.slave_id.value
     task.name = "task {}".format(str(id))
 
     cpus = task.resources.add()

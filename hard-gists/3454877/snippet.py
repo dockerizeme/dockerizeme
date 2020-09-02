@@ -2,15 +2,15 @@ import os, shlex
 
 from twisted.internet import defer, utils, reactor, threads
 from twisted.python import log, failure
-from buildbot.buildsubordinate import AbstractBuildSubordinate, AbstractLatentBuildSubordinate
+from buildbot.buildslave import AbstractBuildSlave, AbstractLatentBuildSlave
 from buildbot import config
 
 
-class ScriptedLatedBuildSubordinate(AbstractLatentBuildSubordinate):
+class ScriptedLatedBuildSubordinate(AbstractLatentBuildSlave):
 
     def __init__(self, name, password, start_script, stop_script, max_builds=None, notify_on_missing=[],
                  missing_timeout=60*20, build_wait_timeout=60*10, properties={}, locks=None):
-        AbstractLatentBuildSubordinate.__init__(self, name, password, max_builds, notify_on_missing,
+        AbstractLatentBuildSlave.__init__(self, name, password, max_builds, notify_on_missing,
                                           missing_timeout, build_wait_timeout, properties, locks)
 
         self.name = name
@@ -29,9 +29,9 @@ class ScriptedLatedBuildSubordinate(AbstractLatentBuildSubordinate):
         retval = yield utils.getProcessValue(self.stop_script[0], self.stop_script[1:])
 
         log.msg("subordinate destroyed (%s): Forcing its connection closed." % self.name)
-        yield AbstractBuildSubordinate.disconnect(self)
+        yield AbstractBuildSlave.disconnect(self)
 
         log.msg("We forced disconnection (%s), cleaning up and triggering new build" % self.name)
-        self.botmain.maybeStartBuildsForSubordinate(self.name)
+        self.botmain.maybeStartBuildsForSlave(self.name)
 
         defer.returnValue(retval == 0)

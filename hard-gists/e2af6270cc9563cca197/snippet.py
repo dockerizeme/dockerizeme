@@ -1,8 +1,8 @@
 import os
 
 from twisted.application import service
-from buildbot.main import BuildMain
-from buildsubordinate.bot import BuildSubordinate
+from buildbot.master import BuildMaster
+from buildslave.bot import BuildSlave
 
 # setup main
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -20,7 +20,7 @@ from twisted.python.log import ILogObserver, FileLogObserver
 
 application.setComponent(ILogObserver, FileLogObserver(sys.stdout).emit)
 
-m = BuildMain(basedir, configfile, umask)
+m = BuildMaster(basedir, configfile, umask)
 m.setServiceParent(application)
 
 # and subordinate on the same process!
@@ -38,7 +38,7 @@ subordinatedir = os.path.join(basedir, "subordinate")
 if not os.path.exists(subordinatedir):
     os.mkdir(subordinatedir)
 
-s = BuildSubordinate(buildmain_host, port, subordinatename, passwd, subordinatedir,
+s = BuildSlave(buildmain_host, port, subordinatename, passwd, subordinatedir,
                keepalive, usepty, umask=umask, maxdelay=maxdelay,
                allow_shutdown=allow_shutdown)
 s.setServiceParent(application)

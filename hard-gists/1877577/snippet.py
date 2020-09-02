@@ -39,8 +39,8 @@ mysql_conn_opts = {}
 mysql_stats = {}
 
 REPORT_INNODB = True
-REPORT_MASTER = True
-REPORT_SLAVE  = True
+REPORT_MAIN = True
+REPORT_SUBORDINATE  = True
 
 def update_stats(get_innodb=True, get_main=True, get_subordinate=True):
 	logging.warning('updating stats')
@@ -95,7 +95,7 @@ def update_stats(get_innodb=True, get_main=True, get_subordinate=True):
 
 		if get_main:
 			cursor = conn.cursor(MySQLdb.cursors.Cursor)
-			cursor.execute("SHOW MASTER LOGS")
+			cursor.execute("SHOW BINARY LOGS")
 			main_logs = cursor.fetchall()
 			cursor.close()
 
@@ -209,7 +209,7 @@ def update_stats(get_innodb=True, get_main=True, get_subordinate=True):
 
 	# process subordinate status
 	if get_subordinate:
-		mysql_stats['subordinate_exec_main_log_pos'] = subordinate_status['exec_main_log_pos']
+		mysql_stats['subordinate_exec_master_log_pos'] = subordinate_status['exec_master_log_pos']
 		#mysql_stats['subordinate_io'] = 1 if subordinate_status['subordinate_io_running'].lower() == "yes" else 0
 		if subordinate_status['subordinate_io_running'].lower() == "yes":
 			mysql_stats['subordinate_io'] = 1
@@ -220,7 +220,7 @@ def update_stats(get_innodb=True, get_main=True, get_subordinate=True):
 			mysql_stats['subordinate_sql'] = 1
 		else:
 			mysql_stats['subordinate_sql'] = 0
-		mysql_stats['subordinate_lag'] = subordinate_status['seconds_behind_main']
+		mysql_stats['subordinate_lag'] = subordinate_status['seconds_behind_master']
 		mysql_stats['subordinate_relay_log_pos'] = subordinate_status['relay_log_pos']
 		mysql_stats['subordinate_relay_log_space'] = subordinate_status['relay_log_space']
 
@@ -230,10 +230,10 @@ def get_stat(name):
 	logging.warning(mysql_stats)
 
 	global REPORT_INNODB
-	global REPORT_MASTER
-	global REPORT_SLAVE
+	global REPORT_MAIN
+	global REPORT_SUBORDINATE
 
-	ret = update_stats(REPORT_INNODB, REPORT_MASTER, REPORT_SLAVE)
+	ret = update_stats(REPORT_INNODB, REPORT_MAIN, REPORT_SUBORDINATE)
 
 	if ret:
 		if name.startswith('mysql_'):
@@ -256,12 +256,12 @@ def metric_init(params):
 	global mysql_stats
 
 	global REPORT_INNODB
-	global REPORT_MASTER
-	global REPORT_SLAVE
+	global REPORT_MAIN
+	global REPORT_SUBORDINATE
 
 	REPORT_INNODB = str(params.get('get_innodb', True)) == "True"
-	REPORT_MASTER = str(params.get('get_main', True)) == "True"
-	REPORT_SLAVE  = str(params.get('get_subordinate', True)) == "True"
+	REPORT_MAIN = str(params.get('get_main', True)) == "True"
+	REPORT_SUBORDINATE  = str(params.get('get_subordinate', True)) == "True"
 
 	logging.warning("init: " + str(params))
 
@@ -583,7 +583,7 @@ def metric_init(params):
 		},
 	)
 
-	if REPORT_MASTER:
+	if REPORT_MAIN:
 		main_stats_descriptions = dict(
 			binlog_count = {
 				'description': "Number of binary logs",
@@ -611,9 +611,9 @@ def metric_init(params):
 			},
 		)
 
-	if REPORT_SLAVE:
+	if REPORT_SUBORDINATE:
 		subordinate_stats_descriptions = dict(
-			subordinate_exec_main_log_pos = {
+			subordinate_exec_master_log_pos = {
 				'description': "The position of the last event executed by the SQL thread from the main's binary log",
 				'units': 'bytes',
 				'slope': 'both',
@@ -913,7 +913,7 @@ def metric_init(params):
 
 	descriptors = []
 
-	update_stats(REPORT_INNODB, REPORT_MASTER, REPORT_SLAVE)
+	update_stats(REPORT_INNODB, REPORT_MAIN, REPORT_SUBORDINATE)
 
 	for stats_descriptions in (innodb_stats_descriptions, main_stats_descriptions, misc_stats_descriptions, subordinate_stats_descriptions):
 		for label in stats_descriptions:

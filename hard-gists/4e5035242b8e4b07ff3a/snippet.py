@@ -209,7 +209,7 @@ def valid_oplog_connection(connection):
         raise Exception("No support for dbgrid")
     except OperationFailure:
         pass
-    main = connection.admin.command("isMain")
+    main = connection.admin.command("isMaster")
     if not main or 'setName' not in main:
         raise Exception("Need replica set to have an oplog")
     log.info("Using replica set: '%s' on %r " % (main["setName"], connection))
