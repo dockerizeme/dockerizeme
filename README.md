@@ -9,6 +9,12 @@ Some terms could not be changed due to dependence on external APIs, links, etc.
 To see all gists as they were for the ICSE 2019 submission, check out one of
 our [releases](https://github.com/dockerizeme/dockerizeme/releases).
 
+## V2
+
+If you are interested in DockerizeMe, you may also be interested in the 
+companion project [V2](https://github.com/v2-project/v2), which adds support
+for dependency versions.
+
 ## Example (Dashtable)
 
 Dashtable is a Python package for converting tables to different markdown formats. The following example
