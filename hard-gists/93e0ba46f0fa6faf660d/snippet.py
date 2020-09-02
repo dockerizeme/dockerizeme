@@ -30,7 +30,7 @@ def new_task(offer):
 
 class HelloWorldScheduler(Scheduler):
 
-    def registered(self, driver, framework_id, master_info):
+    def registered(self, driver, framework_id, main_info):
         logging.info("Registered with framework id: {}".format(framework_id))
 
     def resourceOffers(self, driver, offers):
@@ -54,6 +54,6 @@ if __name__ == '__main__':
     driver = MesosSchedulerDriver(
         HelloWorldScheduler(),
         framework,
-        "zk://localhost:2181/mesos"  # assumes running on the master
+        "zk://localhost:2181/mesos"  # assumes running on the main
     )
     driver.run()

@@ -322,6 +322,6 @@ class SimpleTriggerStep(SafeTrigger, StepUtilMixin):
 
     def getWorkdir(self):
         '''
-        Method needed to be able to use some method from StepUtilMixin such as uploadFileFromSlave
+        Method needed to be able to use some method from StepUtilMixin.
         '''
         return os.path.join(self.getProperty("workdir"), self.build.workdir)

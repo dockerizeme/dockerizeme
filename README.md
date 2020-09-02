@@ -1,5 +1,14 @@
 # Dockerizeme
 
+## On Reproducibility
+
+We have accepted https://github.com/dockerizeme/dockerizeme/pull/3 to 
+transition to main/subordinate terms within the gists included in this repo.
+Some terms could not be changed due to dependence on external APIs, links, etc.
+
+To see all gists as they were for the ICSE 2019 submission, check out one of
+our [releases](https://github.com/dockerizeme/dockerizeme/releases).
+
 ## Example (Dashtable)
 
 Dashtable is a Python package for converting tables to different markdown formats. The following example
